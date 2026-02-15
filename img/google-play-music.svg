@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="google-play-music">
+  <g>
+    <g>
+      <path fill="none" d="M0 0h24v24H0z"></path>
+      <path fill="#ff5919" d="M1 12C1 4 4 1 12 1s11 3 11 11-3 11-11 11S1 20 1 12"></path>
+      <circle cx="12" cy="12" r="7.68" fill="#ffd500"></circle>
+      <circle cx="12" cy="12" r="4.8" fill="#ff9600"></circle>
+      <path fill="#fff" d="M12 9.36v3a1.22 1.22 0 0 0-.6-.16 1.2 1.2 0 1 0 1.2 1.2v-2.84h1.2v-1.2Z"></path>
+    </g>
+  </g>
+</svg>
