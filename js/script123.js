@@ -12,30 +12,24 @@ function secondsToMinutesSeconds(seconds) {
 
 async function getSongs(folder) {
     currFolder = folder;
-    let a = await fetch(`/${folder}/`);
-    let response = await a.text();
-    let div = document.createElement("div");
-    div.innerHTML = response;
-    let as = div.getElementsByTagName("a");
-    songs = [];
     
-    for (let index = 0; index < as.length; index++) {
-        const element = as[index];
-        if (element.href.endsWith(".mp3")) {
-            songs.push(element.href.split(`/${folder}/`)[1]);
-        }
-    }
-
+    //Fetch the list.json
+    let a = await fetch(`${folder}/list.json`);
+    songs = await a.json(); // Now 'songs' is the array of clean filenames
+    
     let songUL = document.querySelector(".songList ul");
     songUL.innerHTML = "";
+
+    // Add songs to the left-side playlist
     for (const song of songs) {
-        let cleanName = decodeURIComponent(song).replace(".mp3", "").split("(")[0].replace(/_/g, " ").trim();
+        //clean the display name for UI, but keep 'song' (with .mp3) for logic
+        let cleanDisplayName = song.replace(".mp3", "").replaceAll("%20", " ");
 
         songUL.innerHTML += `<li><img class="invert" width="34" src="img/music.svg" alt="">
                             <div class="info">
-                                <div style="display:none">${song}</div>
-                                <div>${cleanName}</div>
-                               
+                                <div style="display:none">${song}</div> 
+                                <div>${cleanDisplayName}</div>
+                                <div>Artist</div>
                             </div>
                             <div class="playnow">
                                 <span>Play Now</span>
@@ -43,12 +37,15 @@ async function getSongs(folder) {
                             </div> </li>`;
     }
 
+    //Attach click event to each song
     Array.from(document.querySelector(".songList").getElementsByTagName("li")).forEach(e => {
         e.addEventListener("click", () => {
-            let trackPath = e.querySelector(".info").firstElementChild.innerHTML.trim();
-            playMusic(trackPath);
+            // This gets the hidden filename (e.g., "Song.mp3") from the innerHTML
+            let track = e.querySelector(".info").firstElementChild.innerHTML.trim();
+            playMusic(track);
         });
     });
+
     return songs;
 }
 
@@ -65,47 +62,38 @@ const playMusic = (track, pause = false) => {
 
 async function displayAlbums() {
     console.log("displaying albums");
-    let a = await fetch(`/songs/`);
-    let response = await a.text();
-    let div = document.createElement("div");
-    div.innerHTML = response;
-    let anchors = div.getElementsByTagName("a");
-    let cardContainer = document.querySelector(".cardContainer");
     
-    let array = Array.from(anchors);
-    let htmlContent = ""; // 1. Build a string first for better performance
+    let a = await fetch(`songs/songs.json`);
+    let folders = await a.json(); 
+    
+    let cardContainer = document.querySelector(".cardContainer");
+    let htmlContent = "";
 
-    for (let index = 0; index < array.length; index++) {
-        const e = array[index]; 
-        if (e.href.includes("/songs") && !e.href.includes(".htaccess")) {
-            // 2. More robust folder name extraction
-            let folder = e.href.split("/").filter(Boolean).pop();
-            
-            try {
-                let infoReq = await fetch(`/songs/${folder}/info.json`);
-                if (!infoReq.ok) continue; // Skip folders without info.json
+    // Loop through the folders found in json
+    for (const folder of folders) {
+        try {
+            let infoReq = await fetch(`songs/${folder}/info.json`);
+            if (!infoReq.ok) continue;
 
-                let info = await infoReq.json(); 
-                htmlContent += ` <div data-folder="${folder}" class="card">
-                    <div class="play">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M5 20V4L19 12L5 20Z" stroke="#141B34" fill="#000" stroke-width="1.5" stroke-linejoin="round" />
-                        </svg>
-                    </div>
-                    <img src="/songs/${folder}/cover.jpg" alt="">
-                    <h2>${info.title}</h2>
-                    <p>${info.description}</p>
-                </div>`;
-            } catch (error) {
-                console.warn(`Skipping album ${folder}: Missing or broken info.json`);
-            }
+            let info = await infoReq.json(); 
+            htmlContent += ` <div data-folder="${folder}" class="card">
+                <div class="play">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 20V4L19 12L5 20Z" stroke="#141B34" fill="#000" stroke-width="1.5" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <img src="songs/${folder}/cover.jpg" alt="">
+                <h2>${info.title}</h2>
+                <p>${info.description}</p>
+            </div>`;
+        } catch (error) {
+            console.error(`Skipping ${folder} due to error:`, error);
         }
     }
 
-    // 3. Inject everything once the loop is finished
     cardContainer.innerHTML = htmlContent;
 
-    // 4. Re-attach click listeners to the new cards
+    //attach listeners to newly created cards
     Array.from(document.getElementsByClassName("card")).forEach(e => {
         e.addEventListener("click", async item => {
             songs = await getSongs(`songs/${item.currentTarget.dataset.folder}`);
@@ -152,11 +140,11 @@ async function main() {
     })
 
     // Close when clicking anywhere on the right panel
-        document.querySelector(".right").addEventListener("click", (e) => {
+    document.querySelector(".right").addEventListener("click", (e) => {
 
         if (!e.target.classList.contains("hamburger")) {
-        document.querySelector(".left").style.left = "-120%";
-         }
+            document.querySelector(".left").style.left = "-120%";
+        }
     });
 
 
@@ -188,13 +176,13 @@ async function main() {
         }
     });
 
-// Volume Logic
+    // Volume Logic
     document.querySelector(".range input").addEventListener("input", (e) => {
         let volumeValue = parseInt(e.target.value);
         currentSong.volume = volumeValue / 100;
 
         let volImg = document.querySelector(".volume img");
-        
+
         if (volumeValue > 0) {
             volImg.src = volImg.src.replace("img/mute.svg", "img/volume.svg");
         } else {
@@ -204,7 +192,7 @@ async function main() {
 
     document.querySelector(".volume img").addEventListener("click", e => {
         let rangeInput = document.querySelector(".range input");
-        
+
         if (e.target.src.includes("img/volume.svg")) {
             // Muting
             e.target.src = e.target.src.replace("img/volume.svg", "img/mute.svg");
