@@ -12,11 +12,11 @@ function secondsToMinutesSeconds(seconds) {
 
 async function getSongs(folder) {
     currFolder = folder;
-    
+
     //Fetch the list.json
     let a = await fetch(`${folder}/list.json`);
     songs = await a.json(); // Now 'songs' is the array of clean filenames
-    
+
     let songUL = document.querySelector(".songList ul");
     songUL.innerHTML = "";
 
@@ -29,7 +29,6 @@ async function getSongs(folder) {
                             <div class="info">
                                 <div style="display:none">${song}</div> 
                                 <div>${cleanDisplayName}</div>
-                                <div>Artist</div>
                             </div>
                             <div class="playnow">
                                 <span>Play Now</span>
@@ -50,22 +49,24 @@ async function getSongs(folder) {
 }
 
 const playMusic = (track, pause = false) => {
-    currentSong.src = `/${currFolder}/` + track;
+    currentSong.src = `/${currFolder}/` + track; 
     if (!pause) {
-        currentSong.play();
+        currentSong.play(); 
         document.querySelector("#play").src = "img/pause.svg";
     }
     let cleanName = decodeURIComponent(track).replace(".mp3", "").split("(")[0].trim();
-    document.querySelector(".songinfo").innerHTML = cleanName;
+    
+    document.querySelector(".songinfo").innerHTML = `<span class="scrolling-text">${cleanName}</span>`; 
+    
     document.querySelector(".songtime").innerHTML = "00:00 / 00:00";
 }
 
 async function displayAlbums() {
     console.log("displaying albums");
-    
+
     let a = await fetch(`songs/songs.json`);
-    let folders = await a.json(); 
-    
+    let folders = await a.json();
+
     let cardContainer = document.querySelector(".cardContainer");
     let htmlContent = "";
 
@@ -75,7 +76,7 @@ async function displayAlbums() {
             let infoReq = await fetch(`songs/${folder}/info.json`);
             if (!infoReq.ok) continue;
 
-            let info = await infoReq.json(); 
+            let info = await infoReq.json();
             htmlContent += ` <div data-folder="${folder}" class="card">
                 <div class="play">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -156,23 +157,25 @@ async function main() {
     });
 
     // Wrap-around Next/Prev Logic
-    prevBtn.addEventListener("click", () => {
-        let currentFile = currentSong.src.split("/").slice(-1)[0];
-        let index = songs.indexOf(currentFile);
-        if ((index - 1) >= 0) {
-            playMusic(songs[index - 1]);
-        } else {
-            playMusic(songs[songs.length - 1]); // Wrap to last
-        }
-    });
-
     nextBtn.addEventListener("click", () => {
-        let currentFile = currentSong.src.split("/").slice(-1)[0];
+        let currentFile = decodeURI(currentSong.src.split("/").slice(-1)[0]);
         let index = songs.indexOf(currentFile);
+
         if ((index + 1) < songs.length) {
             playMusic(songs[index + 1]);
         } else {
-            playMusic(songs[0]); // Wrap to first
+            playMusic(songs[0]);
+        }
+    });
+
+    prevBtn.addEventListener("click", () => {
+        let currentFile = decodeURI(currentSong.src.split("/").slice(-1)[0]);
+        let index = songs.indexOf(currentFile);
+
+        if ((index - 1) >= 0) {
+            playMusic(songs[index - 1]);
+        } else {
+            playMusic(songs[songs.length - 1]);
         }
     });
 

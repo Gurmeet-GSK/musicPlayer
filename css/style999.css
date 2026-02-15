@@ -1,9 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 
-:root{
-    --a:0;
+:root {
+    --a: 0;
 }
+
 * {
     margin: 0;
     padding: 0;
@@ -14,12 +15,13 @@
     display: none;
 }
 
-.logo{
+.logo {
     display: flex;
     align-items: center;
     font-weight: 500;
     gap: 3px;
 }
+
 body {
     background-color: black;
     color: white;
@@ -28,7 +30,7 @@ body {
 .left {
     width: 25vw;
     padding: 10px;
-    
+
 }
 
 .right {
@@ -113,7 +115,7 @@ body {
     gap: 10px;
     flex-wrap: wrap;
     overflow-y: auto;
-    max-height: 60vh; 
+    max-height: 60vh;
 }
 
 .card {
@@ -124,7 +126,8 @@ body {
     position: relative;
     transition: all .9s;
 }
-.card:hover{
+
+.card:hover {
     background-color: rgb(105, 103, 103);
     cursor: pointer;
     --a: 1;
@@ -170,7 +173,7 @@ body {
 }
 
 .signupbtn {
-    background-color:#090909;
+    background-color: #090909;
     color: rgb(156, 148, 148);
     font-weight: bold;
     border: none;
@@ -232,7 +235,7 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 100%;
+    width: 130%;
 
 }
 
@@ -256,9 +259,8 @@ body {
     list-style-type: decimal;
     display: flex;
     justify-content: space-between;
-    gap: 12px;
+    gap: 9px;
     cursor: pointer;
-    padding: 12px 0;
     border: 1px solid rgba(146, 143, 143, 0.491);
     margin: 12px 0;
     padding: 13px;
@@ -284,9 +286,9 @@ body {
 }
 
 .playnow span {
-    font-size: 15px;
-    width: 64px;
-    padding: 12px;
+    font-size: 14px;
+    width: 55px;
+    padding: 10px;
 }
 
 .seekbar {
@@ -319,18 +321,31 @@ body {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+
 }
 
 
 .songinfo {
-    display: contents;
+    display: block;
     color: black;
     padding: 0 12px;
     width: 250px;
-    word-break: break-all;
-    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    position: relative;
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.scrolling-text {
+    display: inline-block;
+    white-space: nowrap;
+    padding-left: 100%;
+    animation: marquee 10s linear infinite;
+}
+
+@keyframes marquee {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(-100%, 0); }
 }
 
 .songtime {
@@ -347,13 +362,15 @@ body {
     gap: 12px;
     cursor: pointer;
 }
-.range input{
+
+.range input {
     cursor: pointer;
 }
 
 .abovebar {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin: 20px 0;
     width: 100%;
 }
@@ -364,15 +381,16 @@ body {
         left: -130%;
         transition: all .3s;
         z-index: 1;
-        width: 373px;
+        width: 344px;
         background-color: black;
         padding: 0;
         height: 100vh;
         position: fixed;
         top: 0;
     }
-
-
+    .songinfo{
+        align-items: center;
+    }
     .songtime {
         width: auto;
     }
@@ -397,7 +415,7 @@ body {
     }
 
     .playbar {
-        width: calc(100vw - 75px); 
+        width: calc(100vw - 75px);
     }
 
     .seekbar {
@@ -418,7 +436,7 @@ body {
 
     .cardContainer {
         margin: 0;
-        justify-content: center; 
+        justify-content: center;
     }
 
     .close {
@@ -437,8 +455,12 @@ body {
         margin-bottom: 35vh;
     }
 
-    .playbar{
+    .playbar {
         right: 25px;
+    }
+
+    .songList ul li {
+        gap: 3.3px;
     }
 }
 
@@ -455,7 +477,7 @@ body {
         margin: 0 6px;
     }
 
-    .header{
+    .header {
         padding: 7px;
     }
 
@@ -463,18 +485,23 @@ body {
         padding: 4px;
     }
 
-    .library{
+    .library {
         height: 85vh;
     }
 
-    .left{ 
+    .left {
         width: 100vw;
     }
 
-    .songinfo{
+    .songinfo {
         width: 160px;
     }
- 
 
-    
+    .songList ul li {
+        gap: 4px;
+    }
+
+
+
+
 }
