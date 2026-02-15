@@ -49,15 +49,15 @@ async function getSongs(folder) {
 }
 
 const playMusic = (track, pause = false) => {
-    currentSong.src = `/${currFolder}/` + track; 
+    currentSong.src = `/${currFolder}/` + track;
     if (!pause) {
-        currentSong.play(); 
+        currentSong.play();
         document.querySelector("#play").src = "img/pause.svg";
     }
     let cleanName = decodeURIComponent(track).replace(".mp3", "").split("(")[0].trim();
-    
-    document.querySelector(".songinfo").innerHTML = `<span class="scrolling-text">${cleanName}</span>`; 
-    
+
+    document.querySelector(".songinfo").innerHTML = `<span class="scrolling-text">${cleanName}</span>`;
+
     document.querySelector(".songtime").innerHTML = "00:00 / 00:00";
 }
 
@@ -212,5 +212,23 @@ async function main() {
     // Auto-play next song
     currentSong.addEventListener("ended", () => nextBtn.click());
 }
+    // Search Song 
+const searchInput = document.querySelector("#songSearch");
+
+searchInput.addEventListener("input", (e) => {
+    let filter = e.target.value.toLowerCase();
+    let listItems = document.querySelectorAll(".songList ul li");
+
+    listItems.forEach(li => {
+        let songName = li.querySelector(".info div:nth-child(2)").textContent.toLowerCase();
+
+        if (songName.includes(filter)) {
+            li.style.display = "flex";
+        } else {
+            li.style.display = "none";
+        }
+    });
+});
 
 main();
+
