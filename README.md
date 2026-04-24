@@ -29,18 +29,19 @@ Fetch/Async/Await: To read server directories and metadata.
 DOM Manipulation: For real-time UI updates.
 
 
-📁 Project Structure
-├── css/
-│   ├── style999.css   # Core styling and animations
-│   └── utility.css    # Reusable utility classes
-├── js/
-│   └── script123.js   # Main application logic
-├── songs/             # Music repository
-│   ├── album-name/
-│       ├── info.json  # Metadata for the album
-│       ├── cover.jpg  # Album art
-│       └── song.mp3   # Audio files
-└── index.html         # Main entry point
+​📁 Project Structure
+​root/
+​css/
+​style999.css — Core styling and animations
+​utility.css — Reusable utility classes
+​js/
+​script123.js — Main application logic
+​songs/
+​album-name/
+​info.json — Metadata for the album
+​cover.jpg — Album art
+​song.mp3 — Audio files
+​index.html — Main entry point
 
 
 
